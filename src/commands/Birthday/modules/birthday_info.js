@@ -3,6 +3,7 @@ import { getUserBirthday } from '../../../services/birthdayService.js';
 import { logger } from '../../../utils/logger.js';
 
 import { InteractionHelper } from '../../../utils/interactionHelper.js';
+
 export default {
     async execute(interaction, config, client) {
         await InteractionHelper.safeDefer(interaction);
@@ -16,10 +17,13 @@ export default {
         if (!birthdayData) {
             const embed = new EmbedBuilder()
                 .setColor(0xFF0000)
-                .setTitle('No Birthday Found')
-                .setDescription(targetUser.id === interaction.user.id 
-                    ? "You haven't set your birthday yet. Use `/birthday set` to add it!"
-                    : `${targetUser.username} hasn't set their birthday yet.`);
+                .setTitle('Cumpleaños no encontrado')
+                .setDescription(
+                    targetUser.id === interaction.user.id
+                        ? 'Aún no has configurado tu cumpleaños. Usa `/birthday set` para agregarlo.'
+                        : `${targetUser.username} aún no ha configurado su cumpleaños.`
+                );
+
             return await InteractionHelper.safeEditReply(interaction, {
                 embeds: [embed]
             });
@@ -27,14 +31,16 @@ export default {
 
         const embed = new EmbedBuilder()
             .setColor(0x00FF00)
-            .setTitle('Birthday Information')
-            .setDescription(`**Date:** ${birthdayData.monthName} ${birthdayData.day}\n**User:** ${targetUser.toString()}`);
+            .setTitle('Información del cumpleaños')
+            .setDescription(
+                `**Fecha:** ${birthdayData.day} de ${birthdayData.monthName}\n**Usuario:** ${targetUser.toString()}`
+            );
 
         await InteractionHelper.safeEditReply(interaction, {
             embeds: [embed]
         });
 
-        logger.info('Birthday info retrieved successfully', {
+        logger.info('Información del cumpleaños obtenida correctamente', {
             userId: interaction.user.id,
             targetUserId: targetUser.id,
             guildId,
